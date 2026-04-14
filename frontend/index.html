@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ShopLux – Premium E-Commerce</title>
+
+  <!-- Google Fonts: Playfair Display (headings) + DM Sans (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+
+  <style>
+    /* ─── CSS Variables ──────────────────────────────────────── */
+    :root {
+      --bg:        #0d0d0d;
+      --surface:   #161616;
+      --card:      #1e1e1e;
+      --border:    #2a2a2a;
+      --gold:      #c9a84c;
+      --gold-lt:   #e6c97a;
+      --text:      #f0ece4;
+      --muted:     #888;
+      --danger:    #e05555;
+      --success:   #4caf81;
+      --radius:    12px;
+      --transition: 0.25s ease;
+    }
+
+    /* ─── Reset & Base ───────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    h1,h2,h3,h4 { font-family: 'Playfair Display', serif; }
+    a { text-decoration: none; color: inherit; }
+    button { cursor: pointer; border: none; outline: none; font-family: inherit; }
+    img { display: block; width: 100%; }
+    input, select, textarea {
+      font-family: inherit;
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 14px;
+      outline: none;
+      transition: border var(--transition);
+    }
+    input:focus, select:focus { border-color: var(--gold); }
+
+    /* ─── Layout ─────────────────────────────────────────────── */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* ─── Navbar ─────────────────────────────────────────────── */
+    .navbar {
+      background: rgba(13,13,13,0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+      padding: 0 24px;
+    }
+    .navbar-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 66px;
+    }
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.55rem; font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 0.02em;
+    }
+    .nav-links { display: flex; gap: 8px; align-items: center; }
+    .nav-btn {
+      background: none; color: var(--muted);
+      padding: 7px 14px; border-radius: 8px;
+      font-size: 14px; font-weight: 500;
+      transition: color var(--transition), background var(--transition);
+    }
+    .nav-btn:hover, .nav-btn.active { color: var(--text); background: var(--card); }
+    .cart-btn {
+      background: var(--gold); color: #0d0d0d;
+      padding: 8px 16px; border-radius: 8px;
+      font-weight: 600; font-size: 14px;
+      display: flex; align-items: center; gap: 6px;
+      transition: background var(--transition);
+    }
+    .cart-btn:hover { background: var(--gold-lt); }
+    .badge {
+      background: #0d0d0d; color: var(--gold);
+      font-size: 11px; font-weight: 700;
+      width: 18px; height: 18px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ─── Hero ───────────────────────────────────────────────── */
+    .hero {
+      padding: 90px 24px 70px;
+      text-align: center;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,168,76,0.08) 0%, transparent 70%);
+    }
+    .hero-label {
+      display: inline-block;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.15em;
+      color: var(--gold); text-transform: uppercase;
+      border: 1px solid rgba(201,168,76,0.35);
+      padding: 4px 14px; border-radius: 20px; margin-bottom: 24px;
+    }
+    .hero h1 { font-size: clamp(2.2rem, 5vw, 3.8rem); line-height: 1.15; margin-bottom: 18px; }
+    .hero h1 span { color: var(--gold); }
+    .hero p { color: var(--muted); font-size: 1rem; max-width: 480px; margin: 0 auto 36px; }
+    .hero-cta {
+      display: inline-block;
+      background: var(--gold); color: #0d0d0d;
+      padding: 13px 32px; border-radius: 40px;
+      font-weight: 600; font-size: 15px;
+      transition: background var(--transition), transform var(--transition);
+    }
+    .hero-cta:hover { background: var(--gold-lt); transform: translateY(-2px); }
+
+    /* ─── Section Headings ───────────────────────────────────── */
+    .section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+    .section-head h2 { font-size: 1.6rem; }
+    .section-head span { font-size: 13px; color: var(--gold); cursor: pointer; }
+
+    /* ─── Filters ────────────────────────────────────────────── */
+    .filters { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 32px; }
+    .filter-btn {
+      padding: 7px 18px; border-radius: 20px;
+      font-size: 13px; font-weight: 500;
+      border: 1px solid var(--border);
+      background: none; color: var(--muted);
+      transition: all var(--transition);
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--gold); color: #0d0d0d; border-color: var(--gold);
+    }
+
+    /* ─── Search ─────────────────────────────────────────────── */
+    .search-bar { position: relative; margin-bottom: 32px; }
+    .search-bar input { width: 100%; padding-left: 40px; }
+    .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 16px; }
+
+    /* ─── Product Grid ───────────────────────────────────────── */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 22px;
+    }
+    .product-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+    }
+    .product-card img {
+      height: 220px; object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+    .product-card:hover img { transform: scale(1.04); }
+    .card-body { padding: 18px; }
+    .card-cat { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold); margin-bottom: 6px; }
+    .card-name { font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
+    .card-desc { font-size: 13px; color: var(--muted); margin-bottom: 14px; line-height: 1.5; }
+    .card-footer { display: flex; align-items: center; justify-content: space-between; }
+    .price { font-size: 1.1rem; font-weight: 700; color: var(--gold); }
+    .stock { font-size: 12px; color: var(--muted); }
+    .add-btn {
+      background: var(--gold); color: #0d0d0d;
+      padding: 8px 16px; border-radius: 8px;
+      font-size: 13px; font-weight: 600;
+      transition: background var(--transition);
+    }
+    .add-btn:hover { background: var(--gold-lt); }
+    .add-btn:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
+
+    /* ─── Cart Sidebar ───────────────────────────────────────── */
+    .overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.65);
+      z-index: 200; opacity: 0; pointer-events: none;
+      transition: opacity var(--transition);
+    }
+    .overlay.open { opacity: 1; pointer-events: all; }
+    .sidebar {
+      position: fixed; top: 0; right: 0; height: 100vh;
+      width: 380px; max-width: 100vw;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      z-index: 201; transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+      display: flex; flex-direction: column;
+    }
+    .sidebar.open { transform: translateX(0); }
+    .sidebar-head {
+      padding: 22px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .sidebar-head h3 { font-size: 1.2rem; }
+    .close-btn {
+      background: var(--card); color: var(--text);
+      width: 32px; height: 32px; border-radius: 8px;
+      font-size: 18px; display: flex; align-items: center; justify-content: center;
+    }
+    .cart-items { flex: 1; overflow-y: auto; padding: 20px 24px; }
+    .cart-item {
+      display: flex; gap: 14px; align-items: center;
+      padding: 14px 0; border-bottom: 1px solid var(--border);
+    }
+    .cart-item img { width: 64px; height: 64px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
+    .cart-item-info { flex: 1; }
+    .cart-item-name { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+    .cart-item-price { font-size: 13px; color: var(--gold); }
+    .qty-controls { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+    .qty-btn {
+      background: var(--border); color: var(--text);
+      width: 26px; height: 26px; border-radius: 6px;
+      font-size: 15px; display: flex; align-items: center; justify-content: center;
+      transition: background var(--transition);
+    }
+    .qty-btn:hover { background: var(--gold); color: #0d0d0d; }
+    .qty-num { font-size: 14px; font-weight: 500; min-width: 18px; text-align: center; }
+    .remove-btn { background: none; color: var(--danger); font-size: 18px; }
+    .cart-footer { padding: 20px 24px; border-top: 1px solid var(--border); }
+    .cart-total { display: flex; justify-content: space-between; margin-bottom: 16px; }
+    .cart-total span { color: var(--muted); }
+    .cart-total strong { font-size: 1.1rem; }
+    .checkout-btn {
+      width: 100%; background: var(--gold); color: #0d0d0d;
+      padding: 13px; border-radius: 10px;
+      font-size: 15px; font-weight: 700;
+      transition: background var(--transition);
+    }
+    .checkout-btn:hover { background: var(--gold-lt); }
+    .empty-cart { text-align: center; color: var(--muted); padding: 40px 0; font-size: 14px; }
+
+    /* ─── Auth Modal ─────────────────────────────────────────── */
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+      z-index: 300; display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px; width: 100%; max-width: 420px;
+      animation: popIn 0.2s ease;
+    }
+    @keyframes popIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .modal h2 { font-size: 1.7rem; margin-bottom: 8px; }
+    .modal p { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 500; color: var(--muted); margin-bottom: 6px; }
+    .form-group input { width: 100%; }
+    .submit-btn {
+      width: 100%; background: var(--gold); color: #0d0d0d;
+      padding: 13px; border-radius: 10px;
+      font-size: 15px; font-weight: 700; margin-top: 8px;
+      transition: background var(--transition);
+    }
+    .submit-btn:hover { background: var(--gold-lt); }
+    .toggle-auth { text-align: center; margin-top: 18px; color: var(--muted); font-size: 14px; }
+    .toggle-auth span { color: var(--gold); cursor: pointer; }
+
+    /* ─── Toast Notification ─────────────────────────────────── */
+    .toast {
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--text); border-radius: 10px;
+      padding: 12px 22px; font-size: 14px; font-weight: 500;
+      z-index: 400; transition: transform 0.3s ease, opacity 0.3s ease;
+      opacity: 0; white-space: nowrap;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .toast.success .toast-icon { color: var(--success); }
+    .toast.error   .toast-icon { color: var(--danger); }
+
+    /* ─── Orders Page ────────────────────────────────────────── */
+    .orders-list { display: flex; flex-direction: column; gap: 18px; }
+    .order-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 22px;
+    }
+    .order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .order-id { font-size: 13px; color: var(--muted); }
+    .order-status {
+      font-size: 12px; font-weight: 600; padding: 4px 12px;
+      border-radius: 20px; background: rgba(76,175,129,0.15); color: var(--success);
+    }
+    .order-items { font-size: 14px; color: var(--muted); margin-bottom: 12px; }
+    .order-total { font-weight: 700; color: var(--gold); font-size: 1.05rem; }
+
+    /* ─── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .sidebar { width: 100vw; }
+      .hero { padding: 60px 16px 50px; }
+    }
+    section { padding: 40px 0; }
+  </style>
+</head>
+<body>
+
+<!-- ─── Navbar ───────────────────────────────────────────────── -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <div class="logo">✦ ShopLux</div>
+    <div class="nav-links">
+      <button class="nav-btn active" id="navHome">Home</button>
+      <button class="nav-btn"        id="navOrders">Orders</button>
+      <button class="nav-btn"        id="navAuth">Login</button>
+      <button class="cart-btn"       id="cartToggle">
+        🛒 Cart <span class="badge" id="cartCount">0</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ─── Toast Notification ───────────────────────────────────── -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toastIcon">✓</span>
+  <span id="toastMsg">Success</span>
+</div>
+
+<!-- ─── Cart Overlay + Sidebar ──────────────────────────────── -->
+<div class="overlay" id="overlay"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-head">
+    <h3>Shopping Cart</h3>
+    <button class="close-btn" id="cartClose">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <p class="empty-cart">Your cart is empty 🛒</p>
+  </div>
+  <div class="cart-footer">
+    <div class="cart-total">
+      <span>Total</span>
+      <strong id="cartTotal">₹0</strong>
+    </div>
+    <button class="checkout-btn" id="checkoutBtn">Checkout →</button>
+  </div>
+</aside>
+
+<!-- ─── Main Content ─────────────────────────────────────────── -->
+<main id="mainContent">
+
+  <!-- HOME PAGE -->
+  <div id="homePage">
+    <!-- Hero -->
+    <div class="hero">
+      <div class="hero-label">New Arrivals 2024</div>
+      <h1>Discover <span>Premium</span><br/>Products</h1>
+      <p>Hand-curated items with unmatched quality, delivered right to your door.</p>
+      <a class="hero-cta" href="#shop">Shop Now ↓</a>
+    </div>
+
+    <!-- Shop Section -->
+    <section id="shop" class="container">
+      <div class="section-head">
+        <h2>Our Collection</h2>
+        <span id="clearFilter">Clear filters ✕</span>
+      </div>
+
+      <!-- Search -->
+      <div class="search-bar">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Search products…" />
+      </div>
+
+      <!-- Category Filters -->
+      <div class="filters" id="filterBtns">
+        <button class="filter-btn active" data-cat="">All</button>
+        <button class="filter-btn" data-cat="Electronics">Electronics</button>
+        <button class="filter-btn" data-cat="Footwear">Footwear</button>
+        <button class="filter-btn" data-cat="Bags">Bags</button>
+        <button class="filter-btn" data-cat="Accessories">Accessories</button>
+        <button class="filter-btn" data-cat="Home">Home</button>
+      </div>
+
+      <!-- Product Grid -->
+      <div class="product-grid" id="productGrid">
+        <!-- Products injected here by JavaScript -->
+      </div>
+    </section>
+  </div>
+
+  <!-- ORDERS PAGE -->
+  <div id="ordersPage" style="display:none;" class="container">
+    <section>
+      <div class="section-head">
+        <h2>Your Orders</h2>
+      </div>
+      <div class="orders-list" id="ordersList">
+        <p style="color:var(--muted)">Please log in to view orders.</p>
+      </div>
+    </section>
+  </div>
+
+</main>
+
+<!-- ─── Auth Modal ────────────────────────────────────────────── -->
+<div id="authModal" style="display:none;">
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal" id="modalBox">
+      <h2 id="authTitle">Welcome Back</h2>
+      <p id="authSubtitle">Sign in to continue shopping</p>
+
+      <!-- Login Form -->
+      <div id="loginForm">
+        <div class="form-group"><label>Email</label><input type="email" id="loginEmail" placeholder="you@example.com"/></div>
+        <div class="form-group"><label>Password</label><input type="password" id="loginPassword" placeholder="••••••••"/></div>
+        <button class="submit-btn" id="loginBtn">Sign In</button>
+        <div class="toggle-auth">New here? <span id="toRegister">Create an account</span></div>
+      </div>
+
+      <!-- Register Form -->
+      <div id="registerForm" style="display:none;">
+        <div class="form-group"><label>Full Name</label><input type="text" id="regName" placeholder="John Doe"/></div>
+        <div class="form-group"><label>Email</label><input type="email" id="regEmail" placeholder="you@example.com"/></div>
+        <div class="form-group"><label>Password</label><input type="password" id="regPassword" placeholder="Min. 6 characters"/></div>
+        <button class="submit-btn" id="registerBtn">Create Account</button>
+        <div class="toggle-auth">Already have an account? <span id="toLogin">Sign in</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Checkout Address Modal ───────────────────────────────── -->
+<div id="checkoutModal" style="display:none;">
+  <div class="modal-backdrop">
+    <div class="modal">
+      <h2>Shipping Address</h2>
+      <p>Enter your delivery details</p>
+      <div class="form-group"><label>Full Address</label><input type="text" id="shippingAddress" placeholder="123 Main St, City, State, PIN"/></div>
+      <button class="submit-btn" id="placeOrderBtn">Place Order ✓</button>
+      <div class="toggle-auth"><span id="cancelCheckout" style="color:var(--muted);cursor:pointer">← Back to cart</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── JavaScript ────────────────────────────────────────────── -->
+<script>
+/**
+ * ============================================================
+ *  FRONTEND JAVASCRIPT
+ *  Manages: State, API calls, UI rendering, Events
+ * ============================================================
+ */
+
+// ─── Configuration ────────────────────────────────────────────
+const API = 'http://localhost:3001/api';  // Change to your backend URL
+
+// ─── App State ────────────────────────────────────────────────
+const state = {
+  user:       null,          // { id, name, email } or null
+  token:      null,          // JWT token string
+  products:   [],            // All fetched products
+  cart:       [],            // Cart items from API
+  filter:     { cat: '', search: '' },
+};
+
+// ─── Utilities ────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+
+/** Show a toast message */
+function toast(msg, type = 'success') {
+  const el = $('toast');
+  $('toastMsg').textContent  = msg;
+  $('toastIcon').textContent = type === 'success' ? '✓' : '✕';
+  el.className = `toast show ${type}`;
+  setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+/** Format price in Indian Rupees */
+const fmt = n => `₹${Number(n).toLocaleString('en-IN')}`;
+
+/** Generic API helper – attaches auth header if available */
+async function api(path, options = {}) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (state.token) headers['Authorization'] = `Bearer ${state.token}`;
+  const res = await fetch(API + path, { ...options, headers });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Request failed');
+  return data;
+}
+
+// ─── PRODUCTS ─────────────────────────────────────────────────
+async function loadProducts() {
+  try {
+    state.products = await api('/products');
+    renderProducts();
+  } catch (e) {
+    // If backend is offline, use demo data
+    state.products = getDemoProducts();
+    renderProducts();
+  }
+}
+
+/** Render filtered product cards */
+function renderProducts() {
+  const grid = $('productGrid');
+  let list = [...state.products];
+
+  if (state.filter.cat)
+    list = list.filter(p => p.category === state.filter.cat);
+  if (state.filter.search)
+    list = list.filter(p =>
+      p.name.toLowerCase().includes(state.filter.search) ||
+      p.description.toLowerCase().includes(state.filter.search)
+    );
+
+  grid.innerHTML = list.length === 0
+    ? '<p style="color:var(--muted);grid-column:1/-1">No products found.</p>'
+    : list.map(p => `
+        <div class="product-card">
+          <img src="${p.image}&auto=format" alt="${p.name}" loading="lazy" />
+          <div class="card-body">
+            <div class="card-cat">${p.category}</div>
+            <div class="card-name">${p.name}</div>
+            <div class="card-desc">${p.description}</div>
+            <div class="card-footer">
+              <div>
+                <div class="price">${fmt(p.price)}</div>
+                <div class="stock">${p.stock > 0 ? `${p.stock} in stock` : 'Out of stock'}</div>
+              </div>
+              <button class="add-btn"
+                onclick="addToCart(${p.id})"
+                ${p.stock === 0 ? 'disabled' : ''}>
+                + Add
+              </button>
+            </div>
+          </div>
+        </div>`).join('');
+}
+
+// ─── CART ─────────────────────────────────────────────────────
+async function loadCart() {
+  if (!state.token) { state.cart = []; renderCart(); return; }
+  try {
+    state.cart = await api('/cart');
+    renderCart();
+  } catch {}
+}
+
+/** Add product to cart */
+async function addToCart(productId) {
+  if (!state.token) { showModal('auth'); toast('Please log in first', 'error'); return; }
+  try {
+    await api('/cart', { method: 'POST', body: JSON.stringify({ productId, quantity: 1 }) });
+    await loadCart();
+    openCart();
+    toast('Added to cart!');
+  } catch (e) {
+    toast(e.message, 'error');
+  }
+}
+
+/** Update cart item quantity */
+async function updateQty(productId, qty) {
+  try {
+    await api(`/cart/${productId}`, { method: 'PUT', body: JSON.stringify({ quantity: qty }) });
+    await loadCart();
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+/** Remove item from cart */
+async function removeFromCart(productId) {
+  try {
+    await api(`/cart/${productId}`, { method: 'DELETE' });
+    await loadCart();
+    toast('Removed from cart');
+  } catch (e) { toast(e.message, 'error'); }
+}
+
+/** Render cart sidebar */
+function renderCart() {
+  const container = $('cartItems');
+  $('cartCount').textContent = state.cart.reduce((s, i) => s + i.quantity, 0);
+
+  if (state.cart.length === 0) {
+    container.innerHTML = '<p class="empty-cart">Your cart is empty 🛒</p>';
+    $('cartTotal').textContent = fmt(0);
+    return;
+  }
+
+  const total = state.cart.reduce((s, i) => s + i.price * i.quantity, 0);
+  $('cartTotal').textContent = fmt(total);
+
+  container.innerHTML = state.cart.map(item => `
+    <div class="cart-item">
+      <img src="${item.image}&w=100&auto=format" alt="${item.name}" />
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-price">${fmt(item.price)}</div>
+        <div class="qty-controls">
+          <button class="qty-btn" onclick="updateQty(${item.id}, ${item.quantity - 1})">−</button>
+          <span class="qty-num">${item.quantity}</span>
+          <button class="qty-btn" onclick="updateQty(${item.id}, ${item.quantity + 1})">+</button>
+        </div>
+      </div>
+      <button class="remove-btn" onclick="removeFromCart(${item.id})">✕</button>
+    </div>`).join('');
+}
+
+// ─── AUTH ─────────────────────────────────────────────────────
+async function login() {
+  const email = $('loginEmail').value.trim();
+  const pass  = $('loginPassword').value;
+  try {
+    const data = await api('/auth/login', { method: 'POST', body: JSON.stringify({ email, password: pass }) });
+    setUser(data.token, data.user);
+    closeModal('auth');
+    toast(`Welcome back, ${data.user.name}!`);
+    await loadCart();
+  } catch (e) {
+    toast(e.message, 'error');
+  }
+}
+
+async function register() {
+  const name  = $('regName').value.trim();
+  const email = $('regEmail').value.trim();
+  const pass  = $('regPassword').value;
+  try {
+    const data = await api('/auth/register', { method: 'POST', body: JSON.stringify({ name, email, password: pass }) });
+    setUser(data.token, data.user);
+    closeModal('auth');
+    toast(`Account created! Welcome, ${data.user.name}!`);
+  } catch (e) {
+    toast(e.message, 'error');
+  }
+}
+
+function logout() {
+  state.user  = null;
+  state.token = null;
+  state.cart  = [];
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  renderCart();
+  updateNavAuth();
+  toast('Logged out');
+}
+
+function setUser(token, user) {
+  state.token = token;
+  state.user  = user;
+  localStorage.setItem('token', token);
+  localStorage.setItem('user', JSON.stringify(user));
+  updateNavAuth();
+}
+
+function updateNavAuth() {
+  const btn = $('navAuth');
+  if (state.user) {
+    btn.textContent = `${state.user.name} ↗`;
+    btn.onclick = logout;
+  } else {
+    btn.textContent = 'Login';
+    btn.onclick = () => showModal('auth');
+  }
+}
+
+// ─── ORDERS ───────────────────────────────────────────────────
+async function loadOrders() {
+  if (!state.token) {
+    $('ordersList').innerHTML = '<p style="color:var(--muted)">Please log in to view orders.</p>';
+    return;
+  }
+  try {
+    const orders = await api('/orders');
+    $('ordersList').innerHTML = orders.length === 0
+      ? '<p style="color:var(--muted)">No orders yet.</p>'
+      : orders.map(o => `
+          <div class="order-card">
+            <div class="order-header">
+              <span class="order-id">Order #${o.id} · ${new Date(o.createdAt).toLocaleDateString()}</span>
+              <span class="order-status">${o.status}</span>
+            </div>
+            <div class="order-items">
+              ${o.items.map(i => `${i.name} × ${i.quantity}`).join(', ')}
+            </div>
+            <div>📍 ${o.shippingAddress}</div>
+            <div class="order-total">${fmt(o.total)}</div>
+          </div>`).join('');
+  } catch (e) {
+    $('ordersList').innerHTML = `<p style="color:var(--danger)">${e.message}</p>`;
+  }
+}
+
+async function placeOrder() {
+  const address = $('shippingAddress').value.trim();
+  if (!address) { toast('Please enter a shipping address', 'error'); return; }
+  try {
+    await api('/orders', { method: 'POST', body: JSON.stringify({ shippingAddress: address }) });
+    closeModal('checkout');
+    closeCart();
+    toast('Order placed successfully! 🎉');
+    await loadCart();
+  } catch (e) {
+    toast(e.message, 'error');
+  }
+}
+
+// ─── UI HELPERS ───────────────────────────────────────────────
+function openCart()  { $('sidebar').classList.add('open'); $('overlay').classList.add('open'); }
+function closeCart() { $('sidebar').classList.remove('open'); $('overlay').classList.remove('open'); }
+
+function showModal(type) {
+  $(type === 'auth' ? 'authModal' : 'checkoutModal').style.display = 'flex';
+}
+function closeModal(type) {
+  $(type === 'auth' ? 'authModal' : 'checkoutModal').style.display = 'none';
+}
+
+function showPage(page) {
+  $('homePage').style.display   = page === 'home'   ? '' : 'none';
+  $('ordersPage').style.display = page === 'orders' ? '' : 'none';
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  $(page === 'home' ? 'navHome' : 'navOrders').classList.add('active');
+}
+
+// ─── OFFLINE DEMO DATA (used when backend is not running) ──────
+function getDemoProducts() {
+  return [
+    { id:1, name:'Wireless Headphones', price:2499, category:'Electronics', stock:15, image:'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400', description:'Premium noise-cancelling wireless headphones with 30hr battery.' },
+    { id:2, name:'Running Shoes',        price:3299, category:'Footwear',    stock:30, image:'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400', description:'Lightweight running shoes with responsive cushioning.' },
+    { id:3, name:'Smart Watch',          price:7999, category:'Electronics', stock:8,  image:'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400', description:'Feature-rich smartwatch with health tracking & GPS.' },
+    { id:4, name:'Leather Backpack',     price:1899, category:'Bags',        stock:20, image:'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400', description:'Genuine leather backpack with laptop sleeve.' },
+    { id:5, name:'Sunglasses',           price:999,  category:'Accessories', stock:50, image:'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400', description:'UV400 polarised sunglasses in titanium frame.' },
+    { id:6, name:'Coffee Maker',         price:4299, category:'Home',        stock:12, image:'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400', description:'Programmable drip coffee maker with thermal carafe.' },
+  ];
+}
+
+// ─── EVENT LISTENERS ──────────────────────────────────────────
+$('cartToggle').onclick  = openCart;
+$('cartClose').onclick   = closeCart;
+$('overlay').onclick     = closeCart;
+$('navHome').onclick     = () => showPage('home');
+$('navOrders').onclick   = () => { showPage('orders'); loadOrders(); };
+$('navAuth').onclick     = () => showModal('auth');
+$('loginBtn').onclick    = login;
+$('registerBtn').onclick = register;
+$('checkoutBtn').onclick = () => {
+  if (!state.user) { showModal('auth'); return; }
+  if (!state.cart.length) { toast('Your cart is empty', 'error'); return; }
+  closeCart();
+  showModal('checkout');
+};
+$('placeOrderBtn').onclick  = placeOrder;
+$('cancelCheckout').onclick = () => { closeModal('checkout'); openCart(); };
+$('modalBackdrop').onclick  = e => { if (e.target.id === 'modalBackdrop') closeModal('auth'); };
+$('toRegister').onclick = () => { $('loginForm').style.display='none'; $('registerForm').style.display=''; $('authTitle').textContent='Create Account'; $('authSubtitle').textContent='Join ShopLux today'; };
+$('toLogin').onclick    = () => { $('registerForm').style.display='none'; $('loginForm').style.display=''; $('authTitle').textContent='Welcome Back'; $('authSubtitle').textContent='Sign in to continue shopping'; };
+$('clearFilter').onclick = () => { state.filter.cat=''; document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); document.querySelector('.filter-btn[data-cat=""]').classList.add('active'); renderProducts(); };
+
+// Category filter buttons
+$('filterBtns').querySelectorAll('.filter-btn').forEach(btn => {
+  btn.onclick = () => {
+    $('filterBtns').querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.filter.cat = btn.dataset.cat;
+    renderProducts();
+  };
+});
+
+// Search input
+let searchTimer;
+$('searchInput').oninput = e => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    state.filter.search = e.target.value.trim().toLowerCase();
+    renderProducts();
+  }, 300);
+};
+
+// ─── INIT ─────────────────────────────────────────────────────
+(function init() {
+  // Restore session from localStorage
+  const savedToken = localStorage.getItem('token');
+  const savedUser  = localStorage.getItem('user');
+  if (savedToken && savedUser) {
+    state.token = savedToken;
+    state.user  = JSON.parse(savedUser);
+    updateNavAuth();
+    loadCart();
+  }
+
+  loadProducts();
+})();
+</script>
+
+</body>
+</html>
